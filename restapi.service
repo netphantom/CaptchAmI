@@ -1,0 +1,10 @@
+[Unit]
+Description= Neural network service to solve captcha
+[Service]
+User=fabio
+Group=fabio
+LimitMEMLOCK=2000
+ExecStart=/usr/bin/python3 /home/fabio/CaptchAmI/main.py service
+[Install]
+WantedBy=multi-user.target
+Alias="Captchami Neural Net service"
