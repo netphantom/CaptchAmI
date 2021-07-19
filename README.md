@@ -1,43 +1,43 @@
 # CaptchAmI - Stars and Numbers Captcha Solver
 
-## What is StarNum Captcha Solver
-I made this project to show how it is possible to use AI + Computer Vision to solve Captcha. 
-In particular, I had to deal with two captcha types: stars and numbers.
-For the image containing the stars, I had to count them; for those containing numbers, I had to perform an operation (addition or subtraction).
+## What is CaptchAmI Captcha Solver
+I made this project to show how it is possible to use AI + Computer Vision to solve Captcha.
+In particular, I had to deal with images containing two captcha types: stars and numbers.
+The main objective of this tool is to count the number of stars, or solve a small operation on numbers.
 
-
-The expected output of both the elaboration is a result, which is: the total number of stars or the result of the operation
 
 ## Components
 The project has 2 components: 
 
 1) The Offline training component, to allow the training of the neural network
 
-2) A webserver to use the pre-trained neural network and get the results of the classification
+2) A webserver to use the pre-trained neural networks and get the results of the classification
 
 ## Computer Vision elaboration
 ### Stars elaboration
+This elaboration relies only on Computer Vision techniques. 
 To recognize how many stars are present, the image is preprocessed: it is initially converted to gray, then colors are inverted and finally a threshold is found.
 Everything below this threshold is deleted (usually the background), while the rest of the image is kept intact. 
 After that, it is found how many stars are in the image by calculating the number of objects.
 
 ### Number elaboration
-When there are numbers on the image, the process is different because I have to perform an operation (addition or subtraction).
+When there are numbers on the image, the process is different because I have to identify and perform an operation (addition or subtraction) on the operands.
 For this reason I decided to split the images into three parts and process them accordingly using a neural network.
 The image elaboration starts in the same way as the previous step, by removing the background and cleaning the image by any possible disturb.
 After that, I look for three different regions of pixels (ideally it should be two numbers and one operator).
-Occasionally the operator is connected to the same region of one of the numbers, so if it happens I have decided to "manually" split the biggest area to 5px starting from the rightmost limit.
+Occasionally the operator is connected to the same region of one of the numbers, if it happens I have decided to "manually" split the biggest area to 5px starting from the rightmost limit.
 This ensures to have a "usable" operator without cutting too much the operand.
+Once recognized all the parts, the operation is performed and the resulting value returned.
 
 ## The Neural Network Part
-I created two different neural networks to classify the two different type of input.
+I created two different neural networks to classify the two different type of input (stars and numbers).
 As I wanted the program to be able to separate at the same time both the stars from the numbers and elaborate those in order to get the operation result, there are two neural networks:
 
-1) A NN separate the stars from the numbers
+1) One classify if the image belongs to the stars or the numbers class
 
-2) Another NN recognize the numbers and the operators
+2) Another recognize the numbers and the operators
 
-All the NNs expect to work on 136x47 8-bit color png images, they have the same structure, with two convolutional layers and three linear layers. 
+All the NNs expect to work on 136x47 8-bit color png images, and they have the same structure, with two convolutional layers and three linear layers. 
 The only difference between them is the number of linear units for the classification of the stars and the numbers/operator.
 The details of the NN are in the neural_net.py file.
 
