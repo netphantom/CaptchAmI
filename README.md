@@ -21,8 +21,8 @@ Everything below this threshold is deleted (usually the background), while the r
 After that, it is found how many stars are in the image by calculating the number of objects.
 
 ### Number elaboration
-When there are numbers on the image, the process is different because I have to identify and perform an operation (addition or subtraction) on the operands.
-For this reason I decided to split the images into three parts and process them accordingly using a neural network.
+When the image requires to solve an operation, the elaboration process is different because I have to identify and perform an addition or subtraction on the operands.
+For this reason I decided to make the program split the image into three parts and process them accordingly, using a neural network.
 The image elaboration starts in the same way as the previous step, by removing the background and cleaning the image by any possible disturb.
 After that, I look for three different regions of pixels (ideally it should be two numbers and one operator).
 Occasionally the operator is connected to the same region of one of the numbers, if it happens I have decided to "manually" split the biggest area to 5px starting from the rightmost limit.
@@ -42,12 +42,12 @@ The only difference between them is the number of linear units for the classific
 The details of the NN are in the neural_net.py file.
 
 ## Training offline
-To train the neural network offline, it must be used the cli with the "train" option and: 
+To train the neural network offline, it must be used the cli with the "train" option, and the following arguments: 
 - dataset: specify the dataset on which train the neural network
 - o: specify the output file
 
 ## Test offline
-To test the neural network offline, it must be used the cli with the "classify" option and:
+To test the neural network offline, it must be passed the "classify" argument and the following:
 - b_dataset: specify the binary (numbers vs stars) dataset folder
 - n_dataset: specify the number dataset folder
 - b_nn: specify the binary trained neural network
@@ -68,12 +68,9 @@ It will return the number of stars or the result of the operation.
 ## Conclusions
 I just put down some notes.
 
-* The documentation is still a WIP, I will update this as soon as I can
-
 * I will put some GH actions just to let everybody use the program with ease
 
 * I will create soon a docker image as well
 
 * The dataset I used is in the "dataset" folder
 
-* The accuracy on the test set is around 1. It works pretty well :)
