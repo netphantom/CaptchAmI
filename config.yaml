@@ -1,0 +1,15 @@
+# Please set up here the paths you need to correctly run the program
+
+# Here it is the path of the trained neural networks
+networks:
+  binary: "./pretrained_nets/binary.pt"
+  numbers: "./pretrained_nets/numbers.pt"
+
+# This is the path used to temporary save the file to be classified
+files:
+  temp: "./temp.png"
+
+# This is the path that contains the datasets
+datasets:
+  binary: "./datasets/binary"
+  numbers: "./datasets/multiclass/numbers"

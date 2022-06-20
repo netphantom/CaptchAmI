@@ -1,4 +1,5 @@
 from abc import ABC
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -14,9 +15,10 @@ class CaptchaDataset(Dataset, ABC):
     that allow the training and test process to perform well.
     """
 
-    def __init__(self, path: str, valid_size: float = 0.2, batch_size: int = 32):
+    def __init__(self, path: Path, valid_size: float = 0.2, batch_size: int = 32):
         """
         Instantiate the class with the needed parameters
+
         Args:
             path: the path where to read the dataset and infer the number of classes
             valid_size: the validation size
@@ -26,8 +28,8 @@ class CaptchaDataset(Dataset, ABC):
         self.img_transforms = transforms.Compose([transforms.Grayscale(), transforms.ToTensor()])
         self.batch_size = batch_size
 
-        train_data = datasets.ImageFolder(path, transform=self.img_transforms)
-        test_data = datasets.ImageFolder(path, transform=self.img_transforms)
+        train_data = datasets.ImageFolder(path.name, transform=self.img_transforms)
+        test_data = datasets.ImageFolder(path.name, transform=self.img_transforms)
 
         num_train = len(train_data)
         indices = list(range(num_train))
@@ -46,31 +48,31 @@ class CaptchaDataset(Dataset, ABC):
 
     def get_trainloader(self) -> DataLoader:
         """
-        Returns: the train loader
-
+        Returns:
+            The train loader
         """
         return self.trainloader
 
     def get_testloader(self) -> DataLoader:
         """
-        Returns: the test loader
-
+        Returns:
+            The test loader
         """
         return self.testloader
 
     def get_classes(self) -> int:
         """
-        Returns the number of classes found in the dataset
-
-        Returns: the number of classes of the current dataset
-
+        Returns:
+            The number of classes of the current dataset
         """
         return self.classes
 
     def get_num_channels(self) -> int:
         """
         Returns a value representing the number of channels used in the dataset transformation
-        Returns: 1 if there is only one channel (grayscale) or 3 if the image is a RGB
+
+        Returns:
+            1 if there is only one channel (grayscale) or 3 if the image is RGB
 
         """
         if "Grayscale" in str(self.img_transforms.transforms[0]):
@@ -80,10 +82,7 @@ class CaptchaDataset(Dataset, ABC):
 
     def get_batch_size(self) -> int:
         """
-        Returns the size of the batch used to define the class
-
-        Returns: the batch size
-
+        Returns: The size of the batch used to define the class
         """
         return self.batch_size
 
@@ -105,9 +104,8 @@ class ImgToTensor:
 
     def get_img_tensor(self):
         """
-        Return the tensor containing the data of the elaborated picture
-        Returns: the converted image
-
+        Returns:
+            The tensor containing the data of the elaborated picture
         """
         return self.data
 
@@ -127,17 +125,20 @@ class MultiEpochsDataLoader(DataLoader):
         return len(self.batch_sampler.sampler)
 
     def __iter__(self):
-        for i in range(len(self)):
+        for _ in range(len(self)):
             yield next(self.iterator)
 
 
 class _RepeatSampler(object):
-    """ Sampler that repeats forever.
-    Args:
-        sampler (Sampler)
+    """
+    Sampler that repeats forever.
     """
 
     def __init__(self, sampler):
+        """
+        Args:
+            sampler: Sampler
+        """
         self.sampler = sampler
 
     def __iter__(self):

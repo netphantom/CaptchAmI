@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import torch
+import numpy as np
 from sklearn.metrics import accuracy_score
 from torch.nn.modules import CrossEntropyLoss
 
-from captchami.loaders import CaptchaDataset, ImgToTensor
-from captchami.model import NetModel
+from captchami.nn.loaders import CaptchaDataset, ImgToTensor
+from captchami.nn.model import NetModel
+from captchami.utils.Singleton import Singleton
 
 
-class NeuralNet:
+class NeuralNet (metaclass=Singleton):
 
     def __init__(self, l_i: int, classes: int, loaders: CaptchaDataset):
         if torch.cuda.is_available():
@@ -21,15 +23,17 @@ class NeuralNet:
         self.learning_rate = 0.001
         self.num_epochs = 200
         self.best_model = None
+        self.test_accuracy = 0
 
         self.model = NetModel(in_channels=loaders.get_num_channels(), classes=classes,
                               batch_size=loaders.get_batch_size(), linear_input=l_i)
 
-    def train(self,):
+    def train(self):
         """
         This method trains the neural network.
 
-        Returns: None
+        Returns:
+            None
         """
         train_loader = self.loaders.get_trainloader()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=5e-4)
@@ -75,11 +79,12 @@ class NeuralNet:
             output_list.extend(output.cpu())
             labels_list.extend(labels.cpu())
 
-        print("Accuracy on test set: {}".format(accuracy_score(labels_list, output_list)))
+        self.test_accuracy = accuracy_score(labels_list, output_list)
+        print("Accuracy on test set: {}".format(self.test_accuracy))
         f, ax = plt.subplots(nrows=2)
         sns.lineplot(data=stats, x="epoch", y="accuracy", ax=ax[0])
         sns.lineplot(data=stats, x="epoch", y="loss", ax=ax[1])
-        plt.savefig("stats.pdf")
+        plt.savefig("./training_stats.jpg")
 
     def save(self, path: str) -> None:
         """
@@ -88,7 +93,8 @@ class NeuralNet:
         Args:
             path: the path of the file to save
 
-        Returns: None
+        Returns:
+            None
         """
         torch.save(self.model.state_dict(), path)
 
@@ -100,7 +106,8 @@ class NeuralNet:
         Args:
             path: the path to the file to classify
 
-        Returns: the value of the class for the given image
+        Returns:
+            The value of the class for the given image
 
         """
         self.model.eval()
@@ -117,7 +124,8 @@ class NeuralNet:
         Args:
             img: the 32x32 image converted to a tensor
 
-        Returns: the value of the class for the given image
+        Returns:
+            The value of the class for the given image
         """
         self.model.eval()
         img = torch.reshape(img, (1, 1) + tuple(img.shape))
@@ -133,7 +141,8 @@ class NeuralNet:
             output: the output tensor from the neural network
             labels: the numpy array containing the right classes
 
-        Returns: the accuracy value
+        Returns:
+            The accuracy value
         """
         predictions = torch.max(output, 1)[1]
         correct = predictions.eq(labels)
@@ -147,7 +156,8 @@ class NeuralNet:
         Args:
             path: the file path containing the .pt of the neural network
 
-        Returns: None
+        Returns:
+            None
 
         """
         self.model.load_state_dict(torch.load(path, map_location="cpu"))

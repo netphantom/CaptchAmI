@@ -19,7 +19,8 @@ def elaborate_stars(img: str) -> int:
     Args:
         img: The image to elaborate
 
-    Returns: the number representing how many stars are in the image
+    Returns:
+        The number representing how many stars are in the image
     """
     img = preprocess(img)
     distance = ndi.distance_transform_edt(img)
@@ -35,7 +36,8 @@ def elaborate_numbers(img: str) -> list:
     Args:
         img: The input image
 
-    Returns: a list of ordered elements, corresponding to the first element, the operand and the second element
+    Returns:
+        A list of ordered elements, corresponding to the first element, the operand and the second element
     """
     img = preprocess(img)
     values, items = ndi.label(img)
@@ -70,7 +72,8 @@ def preprocess(img: str) -> np.ndarray:
     Args:
         img: The image to elaborate
 
-    Returns: the preprocessed image
+    Returns:
+        The preprocessed image
     """
     img = io.imread(img)
     img = rgb2gray(img)
@@ -87,7 +90,8 @@ def find_third(regions: list, img: np.ndarray) -> ndi.label:
         regions: The two regions found
         img: the original image
 
-    Returns: the new labels of the three regions
+    Returns:
+        The new labels of the three regions
     """
     # Let's take the biggest region
     if regions[0].area > regions[1].area:
@@ -111,7 +115,8 @@ def delete_one(regions: list, img: np.ndarray) -> ndi.label:
         regions: The regions found
         img: the original image
 
-    Returns: the new labels of the region
+    Returns:
+        The new labels of the region
     """
     # Let's find the smallest area
     smallest_area = regions[0]
@@ -133,7 +138,8 @@ def squarify(img):
     Args:
         img: The image to squarify and pad
 
-    Returns: the squared and padded image
+    Returns:
+        The squared and padded image
     """
 
     # Initially let's make a square
@@ -161,7 +167,8 @@ def base64_to_img(base_64: str, path: str) -> None:
         base_64: the string containing the converted image
         path: the path to save the converted image
 
-    Returns: None
+    Returns:
+        None
     """
     msg = base64.b64decode(base_64)
     buf = py_io.BytesIO(msg)

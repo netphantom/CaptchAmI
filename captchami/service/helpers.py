@@ -6,7 +6,7 @@ import torch
 
 from captchami.nn.loaders import CaptchaDataset
 from captchami.nn.neural_net import NeuralNet
-from captchami.vision import elaborate_numbers
+from captchami.utils.vision import elaborate_numbers
 
 mapper = {0: "+", 1: "-", 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7}
 
@@ -19,7 +19,8 @@ def classify_number(logger, config: dict) -> int:
         logger: the logger used to print information on screen
         config: the config dictionary that contains the path of the image and the neural networks
 
-    Returns: The result of the classification
+    Returns:
+        The result of the classification
     """
     # classed == 0 means that we have a number to elaborate
     num_loader = CaptchaDataset(Path(config["datasets"]["numbers"]))
@@ -66,7 +67,8 @@ def train_binary_net(config: dict) -> float:
     Args:
         config: the dictionary containing the paths of datasets and network
 
-    Returns: The accuracy on the test set
+    Returns:
+        The accuracy on the test set
 
     """
     loaders = CaptchaDataset(Path(config["datasets"]["binary"]))
@@ -84,7 +86,8 @@ def train_numbers_net(config: dict) -> float:
     Args:
         config: the dictionary containing the paths of datasets and network
 
-    Returns: The accuracy on the test set
+    Returns:
+        The accuracy on the test set
 
     """
     loaders = CaptchaDataset(Path(config["datasets"]["numbers"]))
