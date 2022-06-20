@@ -15,7 +15,7 @@ setup(
     # package information
     name='Captchami',
     packages=find_packages(),
-    version='0.0.0',
+    version='1.0.0',
     description='A little AI to solve simple captcha',
     long_description=readme,
     long_description_content_type="text/markdown",

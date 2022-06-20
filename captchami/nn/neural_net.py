@@ -5,8 +5,8 @@ import torch
 from sklearn.metrics import accuracy_score
 from torch.nn.modules import CrossEntropyLoss
 
-from .loaders import *
-from .model import *
+from captchami.loaders import CaptchaDataset, ImgToTensor
+from captchami.model import NetModel
 
 
 class NeuralNet:
@@ -26,6 +26,11 @@ class NeuralNet:
                               batch_size=loaders.get_batch_size(), linear_input=l_i)
 
     def train(self,):
+        """
+        This method trains the neural network.
+
+        Returns: None
+        """
         train_loader = self.loaders.get_trainloader()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=5e-4)
         loss_function = CrossEntropyLoss()
@@ -79,18 +84,19 @@ class NeuralNet:
     def save(self, path: str) -> None:
         """
         Save the current neural network to file
+
         Args:
             path: the path of the file to save
 
         Returns: None
-
         """
         torch.save(self.model.state_dict(), path)
 
     def classify_file(self, path: str) -> int:
         """
         Classify an image file using the current neural network.
-         It returns the value of the class expressed in the dataset with which it has been trained
+        It returns the value of the class expressed in the dataset with which it has been trained
+
         Args:
             path: the path to the file to classify
 
@@ -107,11 +113,11 @@ class NeuralNet:
         """
         Classify a given image tensor using the current neural network.
         It returns the value of the class expressed in the dataset with which it has been trained
+
         Args:
             img: the 32x32 image converted to a tensor
 
         Returns: the value of the class for the given image
-
         """
         self.model.eval()
         img = torch.reshape(img, (1, 1) + tuple(img.shape))
@@ -123,9 +129,11 @@ class NeuralNet:
         """
         Calculate the accuracy of a given couple of tensors
 
-        :param output: the output tensor from the neural network
-        :param labels: the numpy array containing the right classes
-        :returns: the accuracy value
+        Args:
+            output: the output tensor from the neural network
+            labels: the numpy array containing the right classes
+
+        Returns: the accuracy value
         """
         predictions = torch.max(output, 1)[1]
         correct = predictions.eq(labels)
@@ -135,6 +143,7 @@ class NeuralNet:
     def load(self, path: str) -> None:
         """
         Load the state dictionary of the neural network from file and set it to be used on "CPU"
+
         Args:
             path: the file path containing the .pt of the neural network
 

@@ -16,15 +16,14 @@ def elaborate_stars(img: str) -> int:
     """
     Elaborate the stars image, returning the number of stars found
 
-    :param img: The image to elaborate
-    :return: the number representing how many stars are in the image
+    Args:
+        img: The image to elaborate
+
+    Returns: the number representing how many stars are in the image
     """
     img = preprocess(img)
     distance = ndi.distance_transform_edt(img)
     stars = (distance > 0.8 * distance.max(initial=0))
-    # img = img_as_ubyte(img)
-    # io.imshow(img)
-    # io.show()
 
     return np.max(label(stars))
 
@@ -33,8 +32,10 @@ def elaborate_numbers(img: str) -> list:
     """
     This function transforms the image into three parts, ready to be classified
 
-    :param img: The input image
-    :return: a list of ordered elements, corresponding to the first element, the operand and the second element
+    Args:
+        img: The input image
+
+    Returns: a list of ordered elements, corresponding to the first element, the operand and the second element
     """
     img = preprocess(img)
     values, items = ndi.label(img)
@@ -52,7 +53,6 @@ def elaborate_numbers(img: str) -> list:
         boxed_img = img[rmin:rmax, cmin:cmax]
         boxed_img = pad(boxed_img, 5)
         boxed_img = resize(boxed_img, (32, 32))
-        # boxed_img = squarify(boxed_img)
         img_crop.append(boxed_img)
         col_order.append(cmin)
     img_order = sorted(zip(col_order, img_crop))
@@ -62,14 +62,15 @@ def elaborate_numbers(img: str) -> list:
 
 def preprocess(img: str) -> np.ndarray:
     """
-    Perform some small preprocess on the image:
+    Perform the pre-process on the image:
+        1) Conversion to gray
+        2) Color inversion
+        3) Thresholding
 
-    1) Conversion to gray
-    2) Color inversion
-    3) Thresholding
+    Args:
+        img: The image to elaborate
 
-    :param img: The image to elaborate
-    :return: the preprocessed image
+    Returns: the preprocessed image
     """
     img = io.imread(img)
     img = rgb2gray(img)
@@ -82,9 +83,11 @@ def find_third(regions: list, img: np.ndarray) -> ndi.label:
     """
     If only two regions have been found, this function split the biggest region into two parts.
 
-    :param regions: The two regions found
-    :param img: the original image
-    :return: the new labels of the three regions
+    Args:
+        regions: The two regions found
+        img: the original image
+
+    Returns: the new labels of the three regions
     """
     # Let's take the biggest region
     if regions[0].area > regions[1].area:
@@ -104,9 +107,11 @@ def delete_one(regions: list, img: np.ndarray) -> ndi.label:
     """
     If more than 3 regions have been found, this function remove the smallest
 
-    :param regions: The regions found
-    :param img: the original image
-    :return: the new labels of the region
+    Args:
+        regions: The regions found
+        img: the original image
+
+    Returns: the new labels of the region
     """
     # Let's find the smallest area
     smallest_area = regions[0]
@@ -124,8 +129,11 @@ def delete_one(regions: list, img: np.ndarray) -> ndi.label:
 def squarify(img):
     """
     This function make a square out of the image and add some padding to reach the size of 32x32
-    :param img: The image to squarify and pad
-    :return: the squared and padded image
+
+    Args:
+        img: The image to squarify and pad
+
+    Returns: the squared and padded image
     """
 
     # Initially let's make a square
@@ -148,12 +156,12 @@ def squarify(img):
 def base64_to_img(base_64: str, path: str) -> None:
     """
     Convert and save a string of a base64 image to a file
+
     Args:
         base_64: the string containing the converted image
         path: the path to save the converted image
 
     Returns: None
-
     """
     msg = base64.b64decode(base_64)
     buf = py_io.BytesIO(msg)

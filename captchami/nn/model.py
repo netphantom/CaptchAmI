@@ -5,6 +5,7 @@ import torch.nn.functional as F
 
 
 class NetModel(nn.Module, ABC):
+
     def __init__(self, in_channels: int, classes: int, batch_size: int, kernel_size: int = 3, linear_input: int = 720):
         super(NetModel, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=10, kernel_size=kernel_size)
