@@ -47,14 +47,12 @@ def classify_number(logger, config: dict) -> int:
         try:
             result = e1 + e2
         except TypeError:
-            # store_misclassified(temp_file)
             logger.error("Type error occurred on + operator, guessing...")
             result = random.randint(1, 8)
     else:
         try:
             result = e1 - e2
         except TypeError:
-            # store_misclassified(temp_file)
             logger.error("Type error occurred on - operator, guessing...")
             result = random.randint(1, 8)
     return result
@@ -69,7 +67,6 @@ def train_binary_net(config: dict) -> float:
 
     Returns:
         The accuracy on the test set
-
     """
     loaders = CaptchaDataset(Path(config["datasets"]["binary"]))
     nn = NeuralNet(l_i=6400, classes=loaders.get_classes(), loaders=loaders)
@@ -88,7 +85,6 @@ def train_numbers_net(config: dict) -> float:
 
     Returns:
         The accuracy on the test set
-
     """
     loaders = CaptchaDataset(Path(config["datasets"]["numbers"]))
     nn = NeuralNet(l_i=720, classes=loaders.get_classes(), loaders=loaders)
